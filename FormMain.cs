@@ -28,7 +28,7 @@ namespace Trading_results
 
         public void CreateBook(string date)
         {
-            string tempFile=Path.GetTempFileName();
+            string tempFile="res\\test.xls";
             FileStream fromRead = new FileStream(tempFile, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
             int positionRowFrom = 15;
             IWorkbook bookFrom = new HSSFWorkbook(fromRead);
@@ -36,7 +36,7 @@ namespace Trading_results
             IRow rowFrom = sheetFrom.GetRow(positionRowFrom);
             ICell cellFrom = rowFrom.GetCell(1);
             IXLRange rngTable;
-            _sheetTo.Cell(4, 3).Value = "Период выгрузки " + calFrom.SelectionStart.ToString("yyyy/MM/dd") + " - " + calTo.SelectionStart.ToString("yyyy/MM/dd");
+            _sheetTo.Cell(4, 3).Value = "Период выгрузки " + calFrom.SelectionStart.ToString("dd/MM/yyyy") + " - " + calTo.SelectionStart.ToString("dd/MM/yyyy");
             do
             {
                 _sheetTo.Cell(_positionRowTo, (2)).Value = date;
@@ -92,7 +92,7 @@ namespace Trading_results
                 {
                     myStringWebResource = "https://spimex.com/upload/reports/oil_xls/oil_xls_" + curDate.ToString("yyyyMMdd") + "162000.xls";
                     myWebClient.DownloadFile(myStringWebResource, "res\\test.xls");
-                    CreateBook(curDate.ToString("yyyy/MM/dd"));
+                    CreateBook(curDate.ToString("dd/MM/yyyy"));
                 }
                 catch
                 {
@@ -107,7 +107,7 @@ namespace Trading_results
             bookTo.SaveAs(SFDCreatBook.FileName);
 
             if (missDays.Count != 0)
-                MessageBox.Show("За эти дни нету информации:\n" + string.Join("\n", missDays.Select(i => i.ToString("yyyy/MM/dd")).ToArray()));
+                MessageBox.Show("За эти дни нету информации:\n" + string.Join("\n", missDays.Select(i => i.ToString("dd/MM/yyyy")).ToArray()));
             else
                 MessageBox.Show("Выполнено!");
         }
