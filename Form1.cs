@@ -24,13 +24,13 @@ namespace Trading_results
     {
 
         static int positionRowTo = 9;
-        //Защить макет в проект
-        static FileStream ReadMaket = new FileStream("C:\\ttt\\maket.xlsx", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+        static FileStream ReadMaket = new FileStream("res\\maket.xlsx", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
         static XLWorkbook bookTo = new XLWorkbook(ReadMaket);
         static IXLWorksheet sheetTo = bookTo.Worksheets.Worksheet("Result");
 
-        public void CreateBook(FileStream FromRead)
+        public void CreateBook(string date)
         {
+            FileStream FromRead = new FileStream("res\\test.xls", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
             int positionRowFrom = 15;
             IWorkbook bookFrom = new HSSFWorkbook(FromRead);
             ISheet sheetFrom = bookFrom.GetSheetAt(0);
@@ -40,7 +40,7 @@ namespace Trading_results
 
             do
             {
-                sheetTo.Cell(positionRowTo, (2)).Value = "23/04/2023";//Поменять на автоматическую подстановку
+                sheetTo.Cell(positionRowTo, (2)).Value = date;
                 for (int i = 1, j = 2; i <= 5; i++)
                 {
                     if (j != 5)
@@ -55,7 +55,7 @@ namespace Trading_results
                         sheetTo.Cell(positionRowTo, (6)).Value = double.Parse(sheetTo.Cell(positionRowTo, (8)).GetString()) / double.Parse(sheetTo.Cell(positionRowTo, (7)).GetString());
                     cellFrom = rowFrom.GetCell(i + 1);
                 }
-                rngTable = sheetTo.Range("B9:H" + positionRowTo);//можно оптимизировать
+                rngTable = sheetTo.Range("B9:H" + positionRowTo);
                 rngTable.Style.Border.RightBorder = XLBorderStyleValues.Thin;
                 rngTable.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                 rngTable.Style.Border.TopBorder = XLBorderStyleValues.Thin;
@@ -66,15 +66,7 @@ namespace Trading_results
                 cellFrom = rowFrom.GetCell(1);
             } while (cellFrom.StringCellValue != "Итого:");
             FromRead.Close();
-        }
-
-        public void SaveBook()
-        {
-            //Дать выбор пользователю где сохранить файл
-            FileStream WriteTo = new FileStream("C:\\ttt\\outfile.xlsx", FileMode.Create);
-            bookTo.SaveAs(WriteTo);
-            WriteTo.Close();
-            ReadMaket.Close();
+            File.Delete("res\\test.xls");
         }
 
         public formMain()
@@ -82,7 +74,38 @@ namespace Trading_results
             InitializeComponent();
         }
 
-       private void Checking_dates(DateTime calFrom, DateTime calTo)
+        public void DowloadFile(string filename)
+        {
+            try { }
+            catch { }
+        }
+        private void btCreat_Click(object sender, EventArgs e)
+        {
+            if ((SFDCreatBook.ShowDialog() == DialogResult.Cancel))
+                return;
+            positionRowTo = 9;
+            string myStringWebResource = null;
+            var curDate = calFrom.SelectionStart;
+            WebClient myWebClient = new WebClient();
+
+            while (calTo.SelectionStart >= curDate)
+            {
+                try
+                {
+                    myStringWebResource = "https://spimex.com/upload/reports/oil_xls/oil_xls_" + curDate.ToString("yyyyMMdd") + "162000.xls";
+                    myWebClient.DownloadFile(myStringWebResource, "res\\test.xls");
+                    CreateBook(curDate.ToString("yyyy/MM/dd"));
+                    curDate = curDate.AddDays(1);
+                }
+                catch
+                {
+                    curDate = curDate.AddDays(1);
+                }
+            }
+           
+            bookTo.SaveAs(SFDCreatBook.FileName);
+        }
+        private void Checking_dates(DateTime calFrom, DateTime calTo)
         {
             if (calFrom <= calTo)
                 btCreat.Visible = true;
@@ -99,21 +122,6 @@ namespace Trading_results
         private void calFrom_DateChanged(object sender, DateRangeEventArgs e)
         {
             Checking_dates(calFrom.SelectionStart, calTo.SelectionStart);
-        }
-
-        private void btCreat_Click(object sender, EventArgs e)
-        {
-            string remoteUri = "https://spimex.com/upload/reports/oil_xls/";
-            string fileName = "oil_xls_20230420162000.xls", myStringWebResource = null;
-            WebClient myWebClient = new WebClient();
-            myStringWebResource = remoteUri + fileName;
-            myWebClient.DownloadFile(myStringWebResource, "C:\\ttt\\test.xls");
-
-            FileStream FromRead = new FileStream("C:\\ttt\\test.xls", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-            //В зависимости от того сколько файлов найдёт столько раз и вызывать функцию
-            CreateBook(FromRead);
-            File.Delete("C:\\ttt\\test.xls");
-            SaveBook();
         }
     }
 }

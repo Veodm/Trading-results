@@ -34,6 +34,7 @@
             this.lbTo = new System.Windows.Forms.Label();
             this.calTo = new System.Windows.Forms.MonthCalendar();
             this.btCreat = new System.Windows.Forms.Button();
+            this.SFDCreatBook = new System.Windows.Forms.SaveFileDialog();
             this.SuspendLayout();
             // 
             // calFrom
@@ -76,6 +77,10 @@
             this.btCreat.UseVisualStyleBackColor = true;
             this.btCreat.Click += new System.EventHandler(this.btCreat_Click);
             // 
+            // SFDCreatBook
+            // 
+            resources.ApplyResources(this.SFDCreatBook, "SFDCreatBook");
+            // 
             // formMain
             // 
             resources.ApplyResources(this, "$this");
@@ -100,6 +105,7 @@
         private System.Windows.Forms.Label lbTo;
         private System.Windows.Forms.MonthCalendar calTo;
         private System.Windows.Forms.Button btCreat;
+        private System.Windows.Forms.SaveFileDialog SFDCreatBook;
     }
 }
 
