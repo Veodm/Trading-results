@@ -24,6 +24,7 @@ namespace Trading_results
     {
 
         int _positionRowTo;
+        
         IXLWorksheet _sheetTo;        
 
         public void CreateBook(string date)
@@ -78,6 +79,10 @@ namespace Trading_results
         {
             if ((SFDCreatBook.ShowDialog() == DialogResult.Cancel))
                 return;
+
+            FormLoad formLoad = new FormLoad();
+            formLoad.Show();
+
             XLWorkbook bookTo = new XLWorkbook("res\\maket.xlsx");
             _sheetTo = bookTo.Worksheets.Worksheet("Result");
             List<DateTime> missDays = new List<DateTime>();
@@ -105,7 +110,7 @@ namespace Trading_results
             }
            
             bookTo.SaveAs(SFDCreatBook.FileName);
-
+            formLoad.Close();
             if (missDays.Count != 0)
                 MessageBox.Show("За эти дни нету информации:\n" + string.Join("\n", missDays.Select(i => i.ToString("dd/MM/yyyy")).ToArray()));
             else
@@ -125,6 +130,19 @@ namespace Trading_results
         private void calFrom_DateChanged(object sender, DateRangeEventArgs e)
         {
             Checking_dates(calFrom.SelectionStart, calTo.SelectionStart);
+        }
+
+        private void btSchedule_Click(object sender, EventArgs e)
+        {
+            if (calFrom.SelectionStart != calTo.SelectionStart)
+            {
+                FormSchedule formSchedule = new FormSchedule(calFrom.SelectionStart,calTo.SelectionStart);
+                formSchedule.ShowDialog();
+
+            }
+            else
+                MessageBox.Show("Надо выбрать несколько дат");
+                
         }
     }
 }

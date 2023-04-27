@@ -35,6 +35,7 @@
             this.calTo = new System.Windows.Forms.MonthCalendar();
             this.btCreat = new System.Windows.Forms.Button();
             this.SFDCreatBook = new System.Windows.Forms.SaveFileDialog();
+            this.btSchedule = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // calFrom
@@ -81,10 +82,18 @@
             // 
             resources.ApplyResources(this.SFDCreatBook, "SFDCreatBook");
             // 
+            // btSchedule
+            // 
+            resources.ApplyResources(this.btSchedule, "btSchedule");
+            this.btSchedule.Name = "btSchedule";
+            this.btSchedule.UseVisualStyleBackColor = true;
+            this.btSchedule.Click += new System.EventHandler(this.btSchedule_Click);
+            // 
             // formMain
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btSchedule);
             this.Controls.Add(this.btCreat);
             this.Controls.Add(this.lbTo);
             this.Controls.Add(this.calTo);
@@ -106,6 +115,7 @@
         private System.Windows.Forms.MonthCalendar calTo;
         private System.Windows.Forms.Button btCreat;
         private System.Windows.Forms.SaveFileDialog SFDCreatBook;
+        private System.Windows.Forms.Button btSchedule;
     }
 }
 
